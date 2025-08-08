@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "zero",
+  "account_id": "5df48107ff73dbb67b96a31d3f9dae80",
   "compatibility_date": "2025-06-27",
   "observability": {
     "enabled": true,
@@ -28,8 +29,8 @@
     "production": {
       "name": "zero-production",
       "vars": {
-        "VITE_PUBLIC_BACKEND_URL": "https://api.0.email",
-        "VITE_PUBLIC_APP_URL": "https://0.email",
+        "VITE_PUBLIC_BACKEND_URL": "https://api.mail.aididit.net",
+        "VITE_PUBLIC_APP_URL": "https://mail.aididit.net",
       },
     },
   },

@@ -633,9 +633,32 @@ const app = new Hono<HonoContext>()
         }
         const cookieDomain = env.COOKIE_DOMAIN;
         if (!cookieDomain) return null;
-        if (hostname === cookieDomain || hostname.endsWith('.' + cookieDomain)) {
+
+        // Allow exact match
+        if (hostname === cookieDomain) {
           return origin;
         }
+
+        // Allow subdomains
+        if (hostname.endsWith('.' + cookieDomain)) {
+          return origin;
+        }
+
+        // Allow development domains
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+          return origin;
+        }
+
+        // Allow Cloudflare Workers domains for development
+        if (hostname.includes('workers.dev')) {
+          return origin;
+        }
+
+        // Allow the API subdomain
+        if (hostname === 'api.' + cookieDomain) {
+          return origin;
+        }
+
         return null;
       },
       credentials: true,

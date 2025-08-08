@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: zero-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - redis_data:/data
+    command: redis-server --requirepass ${REDIS_PASSWORD:-your_redis_password_here} --appendonly yes
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD:-your_redis_password_here}
+    healthcheck:
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Optional: Redis Commander for web UI (optional)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: zero-redis-commander
+    restart: unless-stopped
+    ports:
+      - '8081:8081'
+    environment:
+      - REDIS_HOSTS=local:redis:6379:0:${REDIS_PASSWORD:-your_redis_password_here}
+    depends_on:
+      - redis
+    profiles:
+      - ui
+
+volumes:
+  redis_data:
+    driver: local
+
+networks:
+  default:
+    name: zero-redis-network

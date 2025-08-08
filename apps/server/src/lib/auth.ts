@@ -11,20 +11,21 @@ import { createAuthMiddleware, phoneNumber, jwt, bearer, mcp } from 'better-auth
 import { type Account, betterAuth, type BetterAuthOptions } from 'better-auth';
 import { getBrowserTimezone, isValidTimezone } from './timezones';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { createEnhancedKVStorage } from './kv-storage';
 import { getSocialProviders } from './auth-providers';
-import { redis, resend, twilio } from './services';
 import { getContext } from 'hono/context-storage';
 import { dubAnalytics } from '@dub/better-auth';
 import { defaultUserSettings } from './schemas';
 import { disableBrainFunction } from './brain';
+import { resend, twilio } from './services';
 import { APIError } from 'better-auth/api';
 import { getZeroDB } from './server-utils';
 import { type EProviders } from '../types';
 import type { HonoContext } from '../ctx';
-import { env } from '../env';
 import { createDriver } from './driver';
 import { createDb } from '../db';
 import { Effect } from 'effect';
+import { env } from '../env';
 import { Dub } from 'dub';
 
 const scheduleCampaign = (userInfo: { address: string; name: string }) =>
@@ -313,21 +314,19 @@ export const createAuth = () => {
 };
 
 const createAuthConfig = () => {
-  const cache = redis();
+  const cache = createEnhancedKVStorage();
   const { db } = createDb(env.HYPERDRIVE.connectionString);
   return {
     database: drizzleAdapter(db, { provider: 'pg' }),
     secondaryStorage: {
       get: async (key: string) => {
-        const value = await cache.get(key);
-        return typeof value === 'string' ? value : value ? JSON.stringify(value) : null;
+        return await cache.get(key);
       },
       set: async (key: string, value: string, ttl?: number) => {
-        if (ttl) await cache.set(key, value, { ex: ttl });
-        else await cache.set(key, value);
+        await cache.set(key, value, ttl);
       },
       delete: async (key: string) => {
-        await cache.del(key);
+        await cache.delete(key);
       },
     },
     advanced: {
@@ -346,6 +345,8 @@ const createAuthConfig = () => {
       'https://sapi.0.email',
       'https://staging.0.email',
       'https://0.email',
+      'https://mail.aididit.net',
+      'https://api.mail.aididit.net',
       'http://localhost:3000',
     ],
     session: {
