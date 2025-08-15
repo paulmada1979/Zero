@@ -3,6 +3,7 @@ import { useSession, signIn } from '@/lib/auth-client';
 import { PricingSwitch } from '../ui/pricing-switch';
 import { useBilling } from '@/hooks/use-billing';
 import { useNavigate } from 'react-router';
+import { APP_CONFIG } from '@/lib/config';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
@@ -88,6 +89,9 @@ export default function PricingCard() {
   const navigate = useNavigate();
 
   const handleUpgrade = async () => {
+    // If app is free, don't show upgrade flow
+    if (APP_CONFIG.isFree) return;
+
     if (!session) {
       handleGoogleSignIn(`${window.location.origin}/pricing`);
       return;

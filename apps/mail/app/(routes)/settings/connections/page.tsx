@@ -12,6 +12,7 @@ import { SettingsCard } from '@/components/settings/settings-card';
 import { AddConnectionDialog } from '@/components/connection/add';
 
 import { useSession, authClient } from '@/lib/auth-client';
+import { APP_CONFIG, HIDE_OPENSOURCE } from '@/lib/config';
 import { useConnections } from '@/hooks/use-connections';
 import { useTRPC } from '@/providers/query-provider';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -164,7 +165,7 @@ export default function ConnectionsPage() {
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="text-muted-foreground hover:text-primary ml-4 shrink-0" 
+                            className="text-muted-foreground hover:text-primary ml-4 shrink-0"
                             disabled={data.connections.length === 1}
                           >
                             <Trash className="h-4 w-4" />
@@ -200,10 +201,23 @@ export default function ConnectionsPage() {
             </div>
           ) : null}
 
-          <div className="flex items-center justify-start">
-            {isPro ? (
-              <AddConnectionDialog>
+          {!HIDE_OPENSOURCE && (
+            <div className="flex items-center justify-start">
+              {isPro || APP_CONFIG.isFree ? (
+                <AddConnectionDialog>
+                  <Button
+                    variant="outline"
+                    className="group relative w-9 overflow-hidden transition-all duration-200 hover:w-full sm:hover:w-[32.5%]"
+                  >
+                    <Plus className="absolute left-2 h-4 w-4" />
+                    <span className="whitespace-nowrap pl-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      {m['pages.settings.connections.addEmail']()}
+                    </span>
+                  </Button>
+                </AddConnectionDialog>
+              ) : (
                 <Button
+                  onClick={() => setPricingDialog('true')}
                   variant="outline"
                   className="group relative w-9 overflow-hidden transition-all duration-200 hover:w-full sm:hover:w-[32.5%]"
                 >
@@ -212,20 +226,9 @@ export default function ConnectionsPage() {
                     {m['pages.settings.connections.addEmail']()}
                   </span>
                 </Button>
-              </AddConnectionDialog>
-            ) : (
-              <Button
-                onClick={() => setPricingDialog('true')}
-                variant="outline"
-                className="group relative w-9 overflow-hidden transition-all duration-200 hover:w-full sm:hover:w-[32.5%]"
-              >
-                <Plus className="absolute left-2 h-4 w-4" />
-                <span className="whitespace-nowrap pl-7 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  {m['pages.settings.connections.addEmail']()}
-                </span>
-              </Button>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
       </SettingsCard>
     </div>

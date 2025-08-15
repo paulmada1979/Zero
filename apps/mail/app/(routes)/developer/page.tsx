@@ -2,6 +2,7 @@ import { Github, Book, Users, Terminal, Code2, Webhook, ArrowRight, ArrowLeft } 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router';
+import { BRAND_NAME } from '@/lib/config';
 
 const developerResources = [
   {
@@ -16,8 +17,8 @@ const developerResources = [
   },
   {
     title: 'GitHub',
-    description: 'Open source repositories',
-    details: 'Access our source code, contribute, and track issues.',
+    description: 'Development repositories',
+    details: 'Learn how to contribute to our development projects.',
     icon: Github,
     href: 'https://github.com',
     linkText: 'View Repository',
@@ -27,7 +28,7 @@ const developerResources = [
   {
     title: 'Contributing',
     description: 'Join our community',
-    details: 'Learn how to contribute to our open source projects.',
+    details: 'Learn how to contribute to our development projects.',
     icon: Users,
     href: '/contributing',
     linkText: 'Contribute',
@@ -87,7 +88,7 @@ export default function DeveloperPage() {
             <div className="space-y-4">
               <h1 className="text-2xl font-bold sm:text-3xl">Developer Resources</h1>
               <p className="text-muted-foreground text-base sm:text-lg">
-                Everything you need to build with 0.email&apos;s APIs and tools.
+                Everything you need to build with {BRAND_NAME}&apos;s APIs and tools.
               </p>
             </div>
           </div>

@@ -1,20 +1,21 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { PurpleThickCheck } from '@/components/icons/icons';
 import { useBilling } from '@/hooks/use-billing';
 import { PricingSwitch } from './pricing-switch';
+import { APP_CONFIG } from '@/lib/config';
 
-import { useState, } from 'react';
 import { useQueryState } from 'nuqs';
+import { useState } from 'react';
 
 import { Badge } from './badge';
 import { toast } from 'sonner';
 
 export function PricingDialog() {
+  // If app is free, don't render the pricing dialog
+  if (APP_CONFIG.isFree) {
+    return null;
+  }
+
   const { attach } = useBilling();
   const [isLoading, setIsLoading] = useState(false);
   const [isAnnual, setIsAnnual] = useState(false);

@@ -3,6 +3,7 @@ import { getListUnsubscribeAction } from '@/lib/email-utils';
 import { trpcClient } from '@/providers/query-provider';
 import { renderToString } from 'react-dom/server';
 import type { ParsedMessage } from '@/types';
+import { BRAND_NAME } from '@/lib/config';
 
 export const handleUnsubscribe = async ({ emailData }: { emailData: ParsedMessage }) => {
   try {
@@ -46,7 +47,7 @@ export const handleUnsubscribe = async ({ emailData }: { emailData: ParsedMessag
               subject: listUnsubscribeAction.subject.trim().length
                 ? listUnsubscribeAction.subject
                 : 'Unsubscribe Request',
-              message: 'Zero sent this email to unsubscribe from this mailing list.',
+              message: `${BRAND_NAME} sent this email to unsubscribe from this mailing list.`,
             });
             return true;
         }

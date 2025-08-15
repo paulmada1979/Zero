@@ -28,6 +28,7 @@ import { createLocalJWKSet, jwtVerify } from 'jose';
 import { enableBrainFunction } from './lib/brain';
 import { trpcServer } from '@hono/trpc-server';
 import { agentsMiddleware } from 'hono-agents';
+import { canCreateConnection } from './config';
 import { ZeroMCP } from './routes/agent/mcp';
 import { publicRouter } from './routes/auth';
 import { WorkflowRunner } from './pipelines';
@@ -410,6 +411,15 @@ class ZeroDB extends DurableObject<ZeroEnv> {
       scope: string;
     },
   ): Promise<{ id: string }[]> {
+    // Check connection limits when app is not free
+    if (!canCreateConnection(0)) {
+      // We'll check the actual count below
+      const existingConnections = await this.findManyConnections(userId);
+      if (!canCreateConnection(existingConnections.length)) {
+        throw new Error('Connection limit reached. Please upgrade to add more connections.');
+      }
+    }
+
     return await this.db
       .insert(connection)
       .values({

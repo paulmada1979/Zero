@@ -5,7 +5,7 @@ import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import Footer from '@/components/home/footer';
 import { createSectionId } from '@/lib/utils';
-
+import { BRAND_NAME } from '@/lib/config';
 
 import React from 'react';
 
@@ -13,7 +13,6 @@ const LAST_UPDATED = 'February 13, 2025';
 
 export default function TermsOfService() {
   const { copiedValue: copiedSection, copyToClipboard } = useCopyToClipboard();
-  
 
   const handleCopyLink = (sectionId: string) => {
     const url = `${window.location.origin}${window.location.pathname}#${sectionId}`;
@@ -25,7 +24,7 @@ export default function TermsOfService() {
       <Navigation />
       <div className="relative z-10 flex grow flex-col">
         {/* Back Button */}
-        <div className="absolute right-4 top-6 md:left-8 md:top-8 md:right-auto">
+        <div className="absolute right-4 top-6 md:left-8 md:right-auto md:top-8">
           <a href="/">
             <Button
               variant="ghost"
@@ -95,8 +94,8 @@ const sections = [
     title: 'Overview',
     content: (
       <p>
-        0.email is an open-source email solution that enables users to self-host their email service
-        or integrate with external email providers. By using 0.email, you agree to these terms.
+        {BRAND_NAME} is an email solution that enables users to self-host their email service or
+        integrate with external email providers. By using {BRAND_NAME}, you agree to these terms.
       </p>
     ),
   },
@@ -144,7 +143,7 @@ const sections = [
     title: 'Software License',
     content: (
       <div className="text-muted-foreground mt-4 space-y-3">
-        <p>0.email is licensed under the MIT License:</p>
+        <p>{BRAND_NAME} is licensed under the MIT License:</p>
         <ul className="ml-4 list-disc space-y-2">
           <li>Users can freely use, modify, and distribute the software</li>
           <li>The software comes with no warranties</li>

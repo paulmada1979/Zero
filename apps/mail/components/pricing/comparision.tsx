@@ -1,5 +1,6 @@
 import { Plus, PurpleThickCheck, ThickCheck } from '../icons/icons';
 import { useSession, signIn } from '@/lib/auth-client';
+import { APP_CONFIG, BRAND_NAME } from '@/lib/config';
 import { useBilling } from '@/hooks/use-billing';
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
@@ -10,6 +11,9 @@ export default function Comparision() {
   const navigate = useNavigate();
 
   const handleUpgrade = async () => {
+    // If app is free, don't show upgrade flow
+    if (APP_CONFIG.isFree) return;
+
     if (!session) {
       toast.promise(
         signIn.social({
@@ -164,7 +168,7 @@ export default function Comparision() {
                     );
                   }
                 }}
-                className="inline-flex h-[40px] items-center justify-center gap-2.5 self-stretch overflow-hidden rounded-lg bg-linear-to-l from-white/0 to-white/10 p-[3.5px] outline outline-1 -outline-offset-1 outline-white/10"
+                className="bg-linear-to-l inline-flex h-[40px] items-center justify-center gap-2.5 self-stretch overflow-hidden rounded-lg from-white/0 to-white/10 p-[3.5px] outline outline-1 -outline-offset-1 outline-white/10"
               >
                 <div className="flex items-center justify-center">
                   <div className="justify-start text-center text-base font-semibold leading-none text-white/80">
@@ -271,12 +275,12 @@ export default function Comparision() {
                   </div>
                 </div>
                 <div className="justify-center text-2xl font-semibold leading-loose text-white">
-                  Zero Pro
+                  {BRAND_NAME} Pro
                 </div>
               </div>
               <button
                 onClick={handleUpgrade}
-                className="inline-flex h-[40px] items-center justify-center gap-2.5 self-stretch overflow-hidden rounded-lg bg-linear-to-l from-white/0 to-white/10 p-[3.5px] outline outline-1 -outline-offset-1 outline-white/10"
+                className="bg-linear-to-l inline-flex h-[40px] items-center justify-center gap-2.5 self-stretch overflow-hidden rounded-lg from-white/0 to-white/10 p-[3.5px] outline outline-1 -outline-offset-1 outline-white/10"
               >
                 <div className="flex items-center justify-center">
                   <div className="justify-start text-center text-base font-semibold leading-none text-white/80">

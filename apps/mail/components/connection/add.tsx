@@ -6,12 +6,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/dialog';
+import { APP_CONFIG, HIDE_OPENSOURCE } from '@/lib/config';
 import { useBilling } from '@/hooks/use-billing';
 import { emailProviders } from '@/lib/constants';
 import { authClient } from '@/lib/auth-client';
-import { Plus, UserPlus } from 'lucide-react';
 import { useLocation } from 'react-router';
 import { m } from '@/paraglide/messages';
+import { UserPlus } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,9 @@ export const AddConnectionDialog = ({
   const { connections, attach } = useBilling();
 
   const canCreateConnection = useMemo(() => {
+    // If app is free, always allow connections
+    if (APP_CONFIG.isFree) return true;
+
     if (!connections?.remaining && !connections?.unlimited) return false;
     return (connections?.unlimited && !connections?.remaining) || (connections?.remaining ?? 0) > 0;
   }, [connections]);
@@ -49,6 +53,10 @@ export const AddConnectionDialog = ({
       );
     }
   };
+
+  if (HIDE_OPENSOURCE) {
+    return null;
+  }
 
   return (
     <Dialog onOpenChange={onOpenChange}>
@@ -71,7 +79,7 @@ export const AddConnectionDialog = ({
             {m['pages.settings.connections.connectEmailDescription']()}
           </DialogDescription>
         </DialogHeader>
-        {!canCreateConnection && (
+        {!canCreateConnection && !APP_CONFIG.isFree && (
           <div className="mt-2 flex justify-between gap-2 rounded-lg border border-red-800 bg-red-800/20 p-2">
             <span className="text-sm">
               You can only connect 1 email in the free tier.{' '}
@@ -122,21 +130,6 @@ export const AddConnectionDialog = ({
               </motion.div>
             );
           })}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: emailProviders.length * 0.1, duration: 0.3 }}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-          >
-            <Button
-              variant="outline"
-              className="h-24 w-full flex-col items-center justify-center gap-2 border-dashed"
-            >
-              <Plus className="h-12 w-12" />
-              <span className="text-xs">{m['pages.settings.connections.moreComingSoon']()}</span>
-            </Button>
-          </motion.div>
         </motion.div>
       </DialogContent>
     </Dialog>

@@ -48,13 +48,14 @@ import { cn, FOLDERS } from '@/lib/utils';
 import { m } from '@/paraglide/messages';
 import MailDisplay from './mail-display';
 
+import { useAnimations } from '@/hooks/use-animations';
+import { AnimatePresence, motion } from 'motion/react';
+import { BRAND_NAME } from '@/lib/config';
 import { Inbox } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 import { format } from 'date-fns';
 import { useAtom } from 'jotai';
 import { toast } from 'sonner';
-import { AnimatePresence, motion } from 'motion/react';
-import { useAnimations } from '@/hooks/use-animations';
 
 const formatFileSize = (size: number) => {
   const sizeInMB = (size / (1024 * 1024)).toFixed(2);
@@ -171,9 +172,9 @@ export function ThreadDisplay() {
   const [, items] = useThreads();
   const [isStarred, setIsStarred] = useState(false);
   const [isImportant, setIsImportant] = useState(false);
-  
+
   const [navigationDirection, setNavigationDirection] = useState<'previous' | 'next' | null>(null);
-  
+
   const animationsEnabled = useAnimations();
 
   // Collect all attachments from all messages in the thread
@@ -774,7 +775,7 @@ export function ThreadDisplay() {
                     <Sparkles className="mr-1 h-3.5 w-3.5 fill-[#959595]" />
                     <div className="flex items-center justify-center gap-2.5 px-0.5">
                       <div className="text-base-gray-950 justify-start text-sm leading-none">
-                        Zero chat
+                        {BRAND_NAME} chat
                       </div>
                     </div>
                   </button>
@@ -1013,10 +1014,15 @@ export function ThreadDisplay() {
               {animationsEnabled ? (
                 <AnimatePresence mode="wait" initial={false}>
                   <motion.div
-                    key={id} 
+                    key={id}
                     initial={{
                       opacity: 0,
-                      x: navigationDirection === 'previous' ? -25 : navigationDirection === 'next' ? 25 : 0,
+                      x:
+                        navigationDirection === 'previous'
+                          ? -25
+                          : navigationDirection === 'next'
+                            ? 25
+                            : 0,
                     }}
                     animate={{
                       opacity: 1,
@@ -1024,10 +1030,15 @@ export function ThreadDisplay() {
                     }}
                     exit={{
                       opacity: 0,
-                      x: navigationDirection === 'previous' ? 25 : navigationDirection === 'next' ? -25 : 0,
+                      x:
+                        navigationDirection === 'previous'
+                          ? 25
+                          : navigationDirection === 'next'
+                            ? -25
+                            : 0,
                     }}
                     transition={{
-                      duration: 0.08, 
+                      duration: 0.08,
                       ease: [0.4, 0, 0.2, 1],
                     }}
                     onAnimationComplete={handleAnimationComplete}
@@ -1084,19 +1095,16 @@ interface MessageListProps {
   isMobile: boolean;
 }
 
-const MessageList = ({ 
-  messages, 
-  isFullscreen, 
-  totalReplies, 
-  allThreadAttachments, 
-  mode, 
+const MessageList = ({
+  messages,
+  isFullscreen,
+  totalReplies,
+  allThreadAttachments,
+  mode,
   activeReplyId,
-  isMobile 
+  isMobile,
 }: MessageListProps) => (
-  <ScrollArea
-    className={cn('flex-1', isMobile ? 'h-[calc(100%-1px)]' : 'h-full')}
-    type="auto"
-  >
+  <ScrollArea className={cn('flex-1', isMobile ? 'h-[calc(100%-1px)]' : 'h-full')} type="auto">
     <div className="pb-4">
       {(messages || []).map((message, index) => {
         const isLastMessage = index === messages.length - 1;
@@ -1105,10 +1113,7 @@ const MessageList = ({
         return (
           <div
             key={message.id}
-            className={cn(
-              'transition-all duration-200',
-              index > 0 && 'border-border border-t',
-            )}
+            className={cn('transition-all duration-200', index > 0 && 'border-border border-t')}
           >
             <MailDisplay
               emailData={message}

@@ -1,5 +1,6 @@
 import { createRateLimiterMiddleware, privateProcedure, publicProcedure, router } from '../trpc';
 import { getActiveConnection, getZeroDB } from '../../lib/server-utils';
+import { canCreateConnection } from '../../config';
 import { Ratelimit } from '@upstash/ratelimit';
 
 import { TRPCError } from '@trpc/server';
@@ -67,6 +68,16 @@ export const connectionsRouter = router({
       picture: connection.picture,
       createdAt: connection.createdAt,
       providerId: connection.providerId,
+    };
+  }),
+  // Add a new endpoint to check if user can create more connections
+  canCreate: privateProcedure.query(async ({ ctx }) => {
+    const { sessionUser } = ctx;
+    const db = await getZeroDB(sessionUser.id);
+    const connections = await db.findManyConnections();
+    return {
+      canCreate: canCreateConnection(connections.length),
+      currentCount: connections.length,
     };
   }),
 });

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { TriangleAlert } from 'lucide-react';
 import { signIn } from '@/lib/auth-client';
 import { useNavigate } from 'react-router';
+import { BRAND_NAME } from '@/lib/config';
 import { useQueryState } from 'nuqs';
 import { toast } from 'sonner';
 
@@ -47,15 +48,15 @@ const getProviderIcon = (providerId: string, className?: string): ReactNode => {
       return (
         <>
           <img
-            src="/white-icon.svg"
-            alt="Zero"
+            src="/logo_dark.png"
+            alt={`${BRAND_NAME}`}
             width={15}
             height={15}
             className="mr-2 hidden dark:block"
           />
           <img
-            src="/black-icon.svg"
-            alt="Zero"
+            src="/logo_light.png"
+            alt={`${BRAND_NAME}`}
             width={15}
             height={15}
             className="mr-2 block dark:hidden"
@@ -136,7 +137,9 @@ function LoginClientContent({ providers, isProd }: LoginClientProps) {
     <div className="flex min-h-screen w-full flex-col items-center justify-between bg-[#111111]">
       <div className="animate-in slide-in-from-bottom-4 mx-auto flex max-w-[600px] grow items-center justify-center space-y-8 px-4 duration-500 sm:px-12 md:px-0">
         <div className="w-full space-y-4">
-          <p className="text-center text-4xl font-bold text-white md:text-5xl">Login to Zero</p>
+          <p className="text-center text-4xl font-bold text-white md:text-5xl">
+            Login to {BRAND_NAME}
+          </p>
 
           {error && (
             <Alert variant="default" className="border-orange-500/40 bg-orange-500/10">
@@ -203,7 +206,7 @@ function LoginClientContent({ providers, isProd }: LoginClientProps) {
                       <div
                         className={`overflow-hidden transition-all duration-300 ease-in-out ${expandedProviders[provider.id] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
                       >
-                        <div className="bg-black/3 p-4 font-mono text-sm dark:bg-white/3">
+                        <div className="bg-black/3 dark:bg-white/3 p-4 font-mono text-sm">
                           {provider.envVarStatus.map((envVar) => (
                             <div
                               key={envVar.name}

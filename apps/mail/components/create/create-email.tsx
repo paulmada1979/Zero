@@ -12,6 +12,7 @@ import { serializeFiles } from '@/lib/schemas';
 import { useDraft } from '@/hooks/use-drafts';
 import { useEffect, useState } from 'react';
 
+import { BRAND_NAME } from '@/lib/config';
 import type { Attachment } from '@/types';
 import { m } from '@/paraglide/messages';
 import { useQueryState } from 'nuqs';
@@ -90,7 +91,7 @@ export function CreateEmail({
     const fromEmail = data.fromEmail || aliases?.[0]?.email || userEmail;
 
     const zeroSignature = settings?.settings.zeroSignature
-      ? '<p style="color: #666; font-size: 12px;">Sent via <a href="https://0.email/" style="color: #0066cc; text-decoration: none;">Zero</a></p>'
+      ? `<p style="color: #666; font-size: 12px;">Sent via <a href="https://0.email/" style="color: #0066cc; text-decoration: none;">${BRAND_NAME}</a></p>`
       : '';
 
     await sendEmail({

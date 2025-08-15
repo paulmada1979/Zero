@@ -16,6 +16,7 @@ import { getSocialProviders } from './auth-providers';
 import { getContext } from 'hono/context-storage';
 import { dubAnalytics } from '@dub/better-auth';
 import { defaultUserSettings } from './schemas';
+import { canCreateConnection } from '../config';
 import { disableBrainFunction } from './brain';
 import { resend, twilio } from './services';
 import { APIError } from 'better-auth/api';
@@ -114,6 +115,16 @@ const connectionHandlerHook = async (account: Account) => {
     throw new APIError('BAD_REQUEST', { message: 'Missing "email" in user info' });
   }
 
+  const db = await getZeroDB(account.userId);
+  const existingConnections = await db.findManyConnections();
+
+  // Check connection limits when app is not free
+  if (!canCreateConnection(existingConnections.length)) {
+    throw new APIError('FORBIDDEN', {
+      message: 'Connection limit reached. Please upgrade to add more connections.',
+    });
+  }
+
   const updatingInfo = {
     name: userInfo.name || 'Unknown',
     picture: userInfo.photo || '',
@@ -123,7 +134,6 @@ const connectionHandlerHook = async (account: Account) => {
     expiresAt: new Date(Date.now() + (account.accessTokenExpiresAt?.getTime() || 3600000)),
   };
 
-  const db = await getZeroDB(account.userId);
   const [result] = await db.createConnection(
     account.providerId as EProviders,
     userInfo.address,

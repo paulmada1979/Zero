@@ -1,6 +1,7 @@
-const TITLE = 'Zero';
-const DESCRIPTION =
-  'Experience email the way you want with 0 - the first open source email app that puts your privacy and safety first.';
+import { BRAND_NAME } from './config';
+
+const TITLE = BRAND_NAME;
+const DESCRIPTION = `Experience email the way you want with ${BRAND_NAME} - the first email app that puts your privacy and safety first.`;
 
 export const siteConfig = {
   title: TITLE,
@@ -8,7 +9,7 @@ export const siteConfig = {
   icons: {
     icon: '/favicon.ico',
   },
-  applicationName: 'Zero',
+  applicationName: BRAND_NAME,
   creator: '@nizzyabi @bruvimtired @ripgrim @needleXO @dakdevs @mrgsub',
   openGraph: {
     title: TITLE,
@@ -29,7 +30,6 @@ export const siteConfig = {
   keywords: [
     'Mail',
     'Email',
-    'Open Source',
     'Email Client',
     'Gmail Alternative',
     'Webmail',

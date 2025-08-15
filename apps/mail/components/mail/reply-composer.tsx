@@ -10,6 +10,7 @@ import { useThread } from '@/hooks/use-threads';
 import { useSession } from '@/lib/auth-client';
 import { serializeFiles } from '@/lib/schemas';
 import { useDraft } from '@/hooks/use-drafts';
+import { BRAND_NAME } from '@/lib/config';
 import { m } from '@/paraglide/messages';
 import type { Sender } from '@/types';
 import { useQueryState } from 'nuqs';
@@ -157,7 +158,7 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
         : undefined;
 
       const zeroSignature = settings?.settings.zeroSignature
-        ? '<p style="color: #666; font-size: 12px;">Sent via <a href="https://0.email/" style="color: #0066cc; text-decoration: none;">Zero</a></p>'
+        ? `<p style="color: #666; font-size: 12px;">Sent via <a href="https://0.email/" style="color: #0066cc; text-decoration: none;">${BRAND_NAME}</a></p>`
         : '';
 
       const emailBody =
@@ -242,10 +243,10 @@ export default function ReplyCompose({ messageId }: ReplyComposeProps) {
   if (!mode || !emailData) return null;
 
   return (
-    <div className="w-full rounded-2xl overflow-visible border">
+    <div className="w-full overflow-visible rounded-2xl border">
       <EmailComposer
         editorClassName="min-h-[50px]"
-        className="w-full max-w-none! pb-1 overflow-visible"
+        className="max-w-none! w-full overflow-visible pb-1"
         onSendEmail={handleSendEmail}
         onClose={async () => {
           setMode(null);

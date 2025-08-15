@@ -3,6 +3,7 @@ import { Github, Mail, ArrowLeft } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Button } from '@/components/ui/button';
 import Footer from '@/components/home/footer';
+import { BRAND_NAME } from '@/lib/config';
 import React from 'react';
 
 export default function AboutPage() {
@@ -59,8 +60,8 @@ const sections = [
     title: 'Our Mission',
     content: (
       <p>
-        Zero is an AI-powered email client that manages your inbox, so you don't have to. We help
-        busy professionals unclutter their inboxes, prioritize important messages, summarize
+        {BRAND_NAME} is an AI-powered email client that manages your inbox, so you don't have to. We
+        help busy professionals unclutter their inboxes, prioritize important messages, summarize
         conversations, complete tasks, and even chat with their inbox — letting them spend less time
         managing email and more time getting things done.
       </p>
@@ -70,8 +71,8 @@ const sections = [
     title: 'Why We Started',
     content: (
       <p>
-        We started Zero because we were frustrated that email — the most-used communication tool in
-        the world — hasn't meaningfully evolved in decades. Despite countless new apps, none
+        We started {BRAND_NAME} because we were frustrated that email — the most-used communication
+        tool in the world — hasn't meaningfully evolved in decades. Despite countless new apps, none
         actually solve the real problem: helping you finish what you intend to do. We realized the
         real solution isn't just a new interface — it's AI acting like a true assistant inside your
         inbox.
@@ -79,22 +80,22 @@ const sections = [
     ),
   },
   {
-    title: 'Open Source',
+    title: 'Transparency & Community',
     content: (
       <div className="space-y-4">
         <p>
-          Zero is built on the principles of transparency and community collaboration. Our entire
-          codebase is open source, allowing anyone to:
+          {BRAND_NAME} is built on the principles of transparency and community collaboration. We
+          believe in building trust through openness and user control.
         </p>
         <ul className="ml-4 list-disc space-y-2">
-          <li>Review our code for security and privacy</li>
-          <li>Contribute improvements and new features</li>
-          <li>Self-host their own instance of Zero</li>
-          <li>Learn from and build upon our work</li>
+          <li>Review our approach to privacy and security</li>
+          <li>Contribute feedback and suggestions</li>
+          <li>Self-host your own instance if desired</li>
+          <li>Learn from our development practices</li>
         </ul>
         <p>
-          We believe that email is too important to be controlled by a single entity. By being open
-          source, we ensure that Zero remains transparent, trustworthy, and accessible to everyone.
+          We believe that email is too important to be controlled by a single entity. By maintaining
+          transparency, we ensure that {BRAND_NAME} remains trustworthy and accessible to everyone.
         </p>
       </div>
     ),
@@ -111,7 +112,7 @@ const sections = [
         </p>
         <p>
           The opportunity is massive: over 4 billion people use email daily, and most still manage
-          it manually. Zero is poised to fundamentally change the way the world deals with
+          it manually. {BRAND_NAME} is poised to fundamentally change the way the world deals with
           communication and tasks — and we're just getting started.
         </p>
       </div>
@@ -122,7 +123,7 @@ const sections = [
     content: (
       <div className="space-y-4">
         <p>
-          Adam and Nizar, the cofounders of Zero, met through family friends. Coming from
+          Adam and Nizar, the cofounders of {BRAND_NAME}, met through family friends. Coming from
           backgrounds in product design and software engineering, we both felt the pain of drowning
           in email firsthand while trying to build and grow companies.
         </p>
@@ -136,7 +137,7 @@ const sections = [
     title: 'Contact',
     content: (
       <div className="space-y-3">
-        <p>Want to learn more about Zero? Get in touch:</p>
+        <p>Want to learn more about {BRAND_NAME}? Get in touch:</p>
         <div className="flex flex-col space-y-2">
           <a
             href="mailto:founders@0.email"

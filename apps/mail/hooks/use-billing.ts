@@ -1,6 +1,7 @@
 import { useAutumn, useCustomer } from 'autumn-js/react';
 import { signOut } from '@/lib/auth-client';
 import { useEffect, useMemo } from 'react';
+import { APP_CONFIG } from '@/lib/config';
 
 type FeatureState = {
   total: number;
@@ -69,6 +70,44 @@ export const useBilling = () => {
   }, [error]);
 
   const { isPro, ...customerFeatures } = useMemo(() => {
+    // If app is free, override all features to be unlimited
+    if (APP_CONFIG.isFree) {
+      const freeFeatures: Features = {
+        chatMessages: {
+          total: Infinity,
+          remaining: Infinity,
+          unlimited: true,
+          enabled: true,
+          usage: 0,
+          nextResetAt: null,
+          interval: '',
+          included_usage: Infinity,
+        },
+        connections: {
+          total: Infinity,
+          remaining: Infinity,
+          unlimited: true,
+          enabled: true,
+          usage: 0,
+          nextResetAt: null,
+          interval: '',
+          included_usage: Infinity,
+        },
+        brainActivity: {
+          total: Infinity,
+          remaining: Infinity,
+          unlimited: true,
+          enabled: true,
+          usage: 0,
+          nextResetAt: null,
+          interval: '',
+          included_usage: Infinity,
+        },
+      };
+
+      return { isPro: true, ...freeFeatures };
+    }
+
     const isPro =
       customer?.products && Array.isArray(customer.products)
         ? customer.products.some((product) =>

@@ -1,16 +1,23 @@
 import { PixelatedBackground } from '@/components/home/pixelated-bg';
 import PricingCard from '@/components/pricing/pricing-card';
 import Comparision from '@/components/pricing/comparision';
+import { APP_CONFIG } from '@/lib/config';
+import { redirect } from 'react-router';
 
 import { Navigation } from '@/components/navigation';
 
 import Footer from '@/components/home/footer';
 
 export default function PricingPage() {
+  // If app is free, redirect to home
+  if (APP_CONFIG.isFree) {
+    throw redirect('/');
+  }
+
   return (
     <main className="relative flex min-h-screen flex-1 flex-col overflow-x-hidden bg-[#0F0F0F]">
       <PixelatedBackground
-        className="z-1 absolute left-1/2 top-[-40px] h-auto w-screen min-w-[1920px] -translate-x-1/2 object-cover"
+        className="z-1 absolute left-1/2 top-[-40px] h-auto w-screen min-w-[1920px] -translate-x-2 object-cover"
         style={{
           mixBlendMode: 'screen',
           maskImage: 'linear-gradient(to bottom, black, transparent)',

@@ -3,6 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import { BRAND_NAME } from '@/lib/config';
 import { Link } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -34,9 +35,9 @@ export default function LoginZero() {
     <div className="flex h-full min-h-screen w-full items-center justify-center bg-black">
       <div className="animate-in slide-in-from-bottom-4 w-full max-w-md px-6 py-8 duration-500">
         <div className="mb-4 text-center">
-          <h1 className="mb-2 text-4xl font-bold text-white">Login with Zero</h1>
-          <p className="text-muted-foreground">
-            Enter your Zero email below to login to your account
+          <h1 className="mb-2 text-4xl font-bold text-white">Login with {BRAND_NAME}</h1>
+          <p className="text-center text-white/80">
+            Enter your {BRAND_NAME} email below to login to your account
           </p>
         </div>
 
@@ -93,7 +94,7 @@ export default function LoginZero() {
               <p className="text-muted-foreground">
                 Don't have an account?{' '}
                 <a href="/zero/signup" className="text-white underline hover:text-white/80">
-                  Sign up
+                  Don't have a {BRAND_NAME} account? Sign up
                 </a>
               </p>
             </div>

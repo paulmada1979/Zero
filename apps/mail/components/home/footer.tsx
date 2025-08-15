@@ -1,4 +1,6 @@
 import { LinkedIn, Twitter, Discord } from '../icons/icons';
+import { HIDE_OPENSOURCE } from '@/lib/config';
+import { BRAND_NAME } from '@/lib/config';
 import { motion } from 'motion/react';
 import { Button } from '../ui/button';
 import { Link } from 'react-router';
@@ -15,11 +17,15 @@ const socialLinks = [
     href: 'https://www.linkedin.com/company/mail0/',
     icon: LinkedIn,
   },
-  {
-    name: 'Discord',
-    href: 'https://discord.gg/mail0',
-    icon: Discord,
-  },
+  ...(!HIDE_OPENSOURCE
+    ? [
+        {
+          name: 'Discord',
+          href: 'https://discord.gg/mail0',
+          icon: Discord,
+        },
+      ]
+    : []),
 ];
 
 export default function Footer() {
@@ -49,7 +55,7 @@ export default function Footer() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="lg:to-panelDark inline-block text-center text-2xl font-bold text-white sm:text-4xl md:text-5xl lg:bg-linear-to-b lg:from-[#84878D] lg:via-[#84878D] lg:bg-clip-text lg:text-8xl lg:text-transparent"
+                  className="lg:to-panelDark lg:bg-linear-to-b inline-block text-center text-2xl font-bold text-white sm:text-4xl md:text-5xl lg:from-[#84878D] lg:via-[#84878D] lg:bg-clip-text lg:text-8xl lg:text-transparent"
                 >
                   <span>Experience the Future of </span> <br />
                   Email Today
@@ -85,7 +91,20 @@ export default function Footer() {
           <div className="inline-flex flex-col items-start justify-between self-stretch">
             <div className="inline-flex w-8 items-center justify-start gap-3">
               <a href="/">
-                <img src="/white-icon.svg" alt="logo" width={100} height={100} />
+                <img
+                  src="/logo_light.png"
+                  alt="logo"
+                  width={100}
+                  height={100}
+                  className="dark:hidden"
+                />
+                <img
+                  src="/logo_dark.png"
+                  alt="logo"
+                  width={100}
+                  height={100}
+                  className="hidden dark:block"
+                />
               </a>
             </div>
             <div className="inline-flex items-center justify-start gap-4">
@@ -155,7 +174,7 @@ export default function Footer() {
                   rel="noreferrer"
                 >
                   <div className="justify-start self-stretch text-base leading-none text-white opacity-80 transition-opacity hover:opacity-100">
-                    Chat with Zero
+                    Chat with {BRAND_NAME}
                   </div>
                 </a>
                 <a
@@ -165,7 +184,7 @@ export default function Footer() {
                   rel="noreferrer"
                 >
                   <div className="justify-start self-stretch text-base leading-none text-white opacity-80 transition-opacity hover:opacity-100">
-                    Zero AI
+                    {BRAND_NAME} AI
                   </div>
                 </a>
                 <a
@@ -195,16 +214,18 @@ export default function Footer() {
                     About
                   </div>
                 </a>
-                <a
-                  target="_blank"
-                  rel="noreferrer"
-                  href="https://github.com/Mail-0/Zero"
-                  className="w-full"
-                >
-                  <div className="justify-start self-stretch text-base font-normal leading-none text-white opacity-80 transition-opacity hover:opacity-100">
-                    Github
-                  </div>
-                </a>
+                {!HIDE_OPENSOURCE && (
+                  <a
+                    target="_blank"
+                    rel="noreferrer"
+                    href="https://github.com/Mail-0/Zero"
+                    className="w-full"
+                  >
+                    <div className="justify-start self-stretch text-base font-normal leading-none text-white opacity-80 transition-opacity hover:opacity-100">
+                      Github
+                    </div>
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -213,7 +234,7 @@ export default function Footer() {
         <div className="flex flex-col items-start justify-start gap-6 self-stretch">
           <div className="inline-flex items-center justify-between self-stretch">
             <div className="justify-start text-xs font-medium leading-tight text-white opacity-80 sm:text-sm">
-              © 2025 Zero Email Inc, All Rights Reserved
+              © 2025 {BRAND_NAME} Email Inc, All Rights Reserved
             </div>
             <div className="flex items-center justify-start gap-4">
               <Link

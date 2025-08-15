@@ -10,6 +10,7 @@ import { navigationConfig, bottomNavItems } from '@/config/navigation';
 import React, { useMemo, useState } from 'react';
 import { useSession } from '@/lib/auth-client';
 
+import { APP_CONFIG, BRAND_NAME } from '@/lib/config';
 import { useSidebar } from '@/components/ui/sidebar';
 import { CreateEmail } from '../create/create-email';
 import { PencilCompose, X } from '../icons/icons';
@@ -19,7 +20,6 @@ import { Button } from '@/components/ui/button';
 import { useAIFullScreen } from './ai-sidebar';
 import { useStats } from '@/hooks/use-stats';
 import { useLocation } from 'react-router';
-
 import { m } from '@/paraglide/messages';
 import { FOLDERS } from '@/lib/utils';
 import { NavUser } from './nav-user';
@@ -102,7 +102,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
           </SidebarContent>
 
-          {!isLoading && !isPro && showUpgrade && state !== 'collapsed' && (
+          {!isLoading && !isPro && showUpgrade && state !== 'collapsed' && !APP_CONFIG.isFree && (
             <div className="relative top-3 mx-3 mb-4 rounded-lg border bg-white px-4 py-4 backdrop-blur-sm dark:bg-[#1C1C1C]">
               <Button
                 variant="ghost"
@@ -113,13 +113,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   localStorage.setItem('hideUpgradeCard', 'true');
                 }}
               >
-                <X className="h-2.5 w-2.5 fill-black dark:fill-white/50" />
+                <X className="h-2.5 w-2.5 fill-black dark:text-white/50" />
               </Button>
               <div className="flex items-start gap-2">
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <h3 className="text-sm font-semibold text-black dark:text-white/90">
-                      Get Zero Pro
+                      Get {BRAND_NAME} Pro
                     </h3>
                   </div>
                   <p className="text-[13px] leading-snug text-black dark:text-white/50">

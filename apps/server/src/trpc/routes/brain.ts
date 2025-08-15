@@ -1,7 +1,8 @@
-import { disableBrainFunction, getPrompts } from '../../lib/brain';
 import { EProviders, EPrompts, type ISubscribeBatch } from '../../types';
+import { disableBrainFunction, getPrompts } from '../../lib/brain';
 import { activeConnectionProcedure, router } from '../trpc';
 import { setSubscribedState } from '../../lib/utils';
+import { canUseBrainFeature } from '../../config';
 import { env } from '../../env';
 import { z } from 'zod';
 
@@ -53,6 +54,12 @@ export const brainRouter = router({
     }),
   getState: activeConnectionProcedure.query(async ({ ctx }) => {
     const connection = ctx.activeConnection;
+
+    // If app is free, always enable brain features
+    if (canUseBrainFeature()) {
+      return { enabled: true };
+    }
+
     const state = await env.subscribed_accounts.get(`${connection.id}__${connection.providerId}`);
     if (!state || state === 'pending') return { enabled: false };
     return { enabled: true };

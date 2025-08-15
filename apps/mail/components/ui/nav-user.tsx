@@ -20,8 +20,9 @@ import { useActiveConnection, useConnections } from '@/hooks/use-connections';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { APP_CONFIG, HIDE_OPENSOURCE } from '@/lib/config';
 import { useLoading } from '../context/loading-context';
-import { signOut, useSession } from '@/lib/auth-client';
+import { useSession, signOut } from '@/lib/auth-client';
 import { AddConnectionDialog } from '../connection/add';
 import { CircleCheck, ThreeDots } from '../icons/icons';
 import { useTRPC } from '@/providers/query-provider';
@@ -152,7 +153,7 @@ export function NavUser() {
                 </div>
               </DropdownMenuTrigger>
               <DropdownMenuContent
-                className="ml-3 w-(--radix-dropdown-menu-trigger-width) min-w-56 bg-white font-medium dark:bg-[#131313]"
+                className="w-(--radix-dropdown-menu-trigger-width) ml-3 min-w-56 bg-white font-medium dark:bg-[#131313]"
                 align="end"
                 side={'bottom'}
                 sideOffset={8}
@@ -183,7 +184,7 @@ export function NavUser() {
                       <div className="w-full">
                         <div className="flex items-center justify-center gap-0.5 text-sm font-medium">
                           {activeAccount.name || session.user.name || 'User'}
-                          {isPro && (
+                          {(isPro || APP_CONFIG.isFree) && (
                             <BadgeCheck
                               className="h-4 w-4 text-white dark:text-[#141414]"
                               fill="#1D9BF0"
@@ -427,22 +428,23 @@ export function NavUser() {
                 </DropdownMenu>
               )}
 
-              {isPro ? (
-                <AddConnectionDialog>
-                  <button className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border border-dashed dark:bg-[#262626] dark:text-[#929292]">
-                    <Plus className="size-4" />
-                  </button>
-                </AddConnectionDialog>
-              ) : (
-                <>
-                  <Button
-                    onClick={() => setPricingDialog('true')}
-                    className="hover:bg-offsetLight/80 flex h-7 w-7 cursor-pointer items-center justify-center rounded-[5px] border border-dashed bg-transparent px-0 text-black dark:bg-[#262626] dark:text-[#929292]"
-                  >
-                    <Plus className="size-4" />
-                  </Button>
-                </>
-              )}
+              {!HIDE_OPENSOURCE &&
+                (isPro || APP_CONFIG.isFree ? (
+                  <AddConnectionDialog>
+                    <button className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-[5px] border border-dashed dark:bg-[#262626] dark:text-[#929292]">
+                      <Plus className="size-4" />
+                    </button>
+                  </AddConnectionDialog>
+                ) : (
+                  <>
+                    <Button
+                      onClick={() => setPricingDialog('true')}
+                      className="hover:bg-offsetLight/80 flex h-7 w-7 cursor-pointer items-center justify-center rounded-[5px] border border-dashed bg-transparent px-0 text-black dark:bg-[#262626] dark:text-[#929292]"
+                    >
+                      <Plus className="size-4" />
+                    </Button>
+                  </>
+                ))}
             </div>
 
             <div className="flex items-center justify-center gap-1">
@@ -482,21 +484,23 @@ export function NavUser() {
                         <p className="text-[13px] opacity-60">{m['common.navUser.appTheme']()}</p>
                       </div>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <a
-                        href="https://discord.gg/mail0"
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-full"
-                      >
-                        <div className="flex items-center gap-2">
-                          <HelpCircle size={16} className="opacity-60" />
-                          <p className="text-[13px] opacity-60">
-                            {m['common.navUser.customerSupport']()}
-                          </p>
-                        </div>
-                      </a>
-                    </DropdownMenuItem>
+                    {!HIDE_OPENSOURCE && (
+                      <DropdownMenuItem>
+                        <a
+                          href="https://discord.gg/mail0"
+                          target="_blank"
+                          rel="noreferrer"
+                          className="w-full"
+                        >
+                          <div className="flex items-center gap-2">
+                            <HelpCircle size={16} className="opacity-60" />
+                            <p className="text-[13px] opacity-60">
+                              {m['common.navUser.customerSupport']()}
+                            </p>
+                          </div>
+                        </a>
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem className="cursor-pointer" onClick={handleLogout}>
                       <div className="flex items-center gap-2">
                         <LogOut size={16} className="opacity-60" />
@@ -515,20 +519,26 @@ export function NavUser() {
                       Terms
                     </a>
                   </div>
-                  <DropdownMenuSeparator className="mt-1" />
-                  <p className="text-muted-foreground px-2 py-1 text-[11px] font-medium">Debug</p>
-                  <DropdownMenuItem onClick={handleCopyConnectionId}>
-                    <div className="flex items-center gap-2">
-                      <CopyCheckIcon size={16} className="opacity-60" />
-                      <p className="text-[13px] opacity-60">Copy Connection ID</p>
-                    </div>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={handleClearCache}>
-                    <div className="flex items-center gap-2">
-                      <HelpCircle size={16} className="opacity-60" />
-                      <p className="text-[13px] opacity-60">Clear Local Cache</p>
-                    </div>
-                  </DropdownMenuItem>
+                  {!HIDE_OPENSOURCE && (
+                    <>
+                      <DropdownMenuSeparator className="mt-1" />
+                      <p className="text-muted-foreground px-2 py-1 text-[11px] font-medium">
+                        Debug
+                      </p>
+                      <DropdownMenuItem onClick={handleCopyConnectionId}>
+                        <div className="flex items-center gap-2">
+                          <CopyCheckIcon size={16} className="opacity-60" />
+                          <p className="text-[13px] opacity-60">Copy Connection ID</p>
+                        </div>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleClearCache}>
+                        <div className="flex items-center gap-2">
+                          <HelpCircle size={16} className="opacity-60" />
+                          <p className="text-[13px] opacity-60">Clear Local Cache</p>
+                        </div>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -543,14 +553,14 @@ export function NavUser() {
               <p className={cn('max-w-[14.5ch] truncate text-[13px]')}>
                 {activeAccount?.name || session.user.name || 'User'}
               </p>
-              {isPro ? (
+              {isPro || APP_CONFIG.isFree ? (
                 <BadgeCheck className="h-4 w-4 text-white dark:text-[#141414]" fill="#1D9BF0" />
               ) : null}
             </div>
             <div className="h-5 max-w-[200px] overflow-hidden truncate text-xs font-normal leading-none text-[#898989]">
               {activeAccount?.email || session.user.email}
             </div>
-            {!isPro && (
+            {!isPro && !APP_CONFIG.isFree && !HIDE_OPENSOURCE && (
               <button
                 onClick={() => setPricingDialog('true')}
                 className="flex h-5 items-center gap-1 rounded-full border px-1 pr-1.5 hover:bg-transparent"

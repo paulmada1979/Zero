@@ -15,6 +15,8 @@ import { VoiceButton } from '../voice-button';
 import { EditorContent } from '@tiptap/react';
 import { CurvedArrow } from '../icons/icons';
 import { Tools } from '../../types/tools';
+import { BRAND_NAME } from '@/lib/config';
+import { APP_CONFIG } from '@/lib/config';
 import { Button } from '../ui/button';
 import { format } from 'date-fns-tz';
 import { useQueryState } from 'nuqs';
@@ -223,7 +225,7 @@ export function AIChat({
   }, [status, scrollToBottom]);
 
   const editor = useComposeEditor({
-    placeholder: 'Ask Zero to do anything...',
+    placeholder: `Ask ${BRAND_NAME} to do anything...`,
     onLengthChange: () => setInput(editor.getText()),
     onKeydown(event) {
       if (event.key === '0' && event.metaKey) {
@@ -261,21 +263,25 @@ export function AIChat({
     <div className={cn('flex h-full flex-col', isFullScreen ? 'mx-auto max-w-xl' : '')}>
       <div className="no-scrollbar flex-1 overflow-y-auto" ref={messagesContainerRef}>
         <div className="min-h-full px-2 py-4">
-          {chatMessages && !chatMessages.enabled ? (
+          {chatMessages && !chatMessages.enabled && !APP_CONFIG.isFree ? (
             <div
               onClick={() => setPricingDialog('true')}
               className="absolute inset-0 flex flex-col items-center justify-center"
             >
               <TextShimmer className="text-center text-xl font-medium">
-                Upgrade to Zero Pro for unlimited AI chat
+                Upgrade to {BRAND_NAME} Pro for unlimited AI chat
               </TextShimmer>
               <Button className="mt-2 h-8 w-52">Start 7 day free trial</Button>
             </div>
           ) : !messages.length ? (
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <div className="relative mb-4 h-[44px] w-[44px]">
-                <img src="/black-icon.svg" alt="Zero Logo" className="dark:hidden" />
-                <img src="/white-icon.svg" alt="Zero Logo" className="hidden dark:block" />
+                <img src="/logo_light.png" alt={`${BRAND_NAME} Logo`} className="dark:hidden" />
+                <img
+                  src="/logo_dark.png"
+                  alt={`${BRAND_NAME} Logo`}
+                  className="hidden dark:block"
+                />
               </div>
               <p className="mb-1 mt-2 hidden text-center text-sm font-medium text-black md:block dark:text-white">
                 Ask anything about your emails
@@ -356,7 +362,7 @@ export function AIChat({
           {(status === 'submitted' || status === 'streaming') && (
             <div className="absolute bottom-0 ml-2 flex items-center gap-2">
               <TextShimmer className="text-muted-foreground text-xs">
-                zero is thinking...
+                {BRAND_NAME} is thinking...
               </TextShimmer>
             </div>
           )}

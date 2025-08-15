@@ -3,10 +3,17 @@ import { getSubscriptionFactory } from './factories/subscription-factory.registr
 import { AiChatPrompt, StyledEmailAssistantSystemPrompt } from './prompts';
 import { resetConnection } from './server-utils';
 import { EPrompts, EProviders } from '../types';
+import { canUseBrainFeature } from '../config';
 import { getPromptName } from '../pipelines';
 import { env } from '../env';
 
 export const enableBrainFunction = async (connection: { id: string; providerId: EProviders }) => {
+  // If app is free, skip subscription setup
+  if (canUseBrainFeature()) {
+    console.log('App is free, skipping brain function subscription setup');
+    return;
+  }
+
   try {
     const subscriptionFactory = getSubscriptionFactory(connection.providerId);
     await subscriptionFactory.subscribe({ body: { connectionId: connection.id } });
@@ -17,6 +24,12 @@ export const enableBrainFunction = async (connection: { id: string; providerId: 
 };
 
 export const disableBrainFunction = async (connection: { id: string; providerId: EProviders }) => {
+  // If app is free, skip subscription cleanup
+  if (canUseBrainFeature()) {
+    console.log('App is free, skipping brain function subscription cleanup');
+    return;
+  }
+
   try {
     const subscriptionFactory = getSubscriptionFactory(connection.providerId);
     await subscriptionFactory.unsubscribe({

@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { GitHub, Twitter, Discord, LinkedIn, Star } from './icons/icons';
+import { APP_CONFIG, BRAND_NAME, HIDE_OPENSOURCE } from '@/lib/config';
 import { AnimatedNumber } from '@/components/ui/animated-number';
 import { signIn, useSession } from '@/lib/auth-client';
 import { Separator } from '@/components/ui/separator';
@@ -38,12 +39,16 @@ const resources = [
     description: 'Connect with us professionally and stay updated.',
     platform: 'linkedin' as const,
   },
-  {
-    title: 'Discord',
-    href: 'https://discord.gg/mail0',
-    description: 'Join our community and chat with the team.',
-    platform: 'discord' as const,
-  },
+  ...(!HIDE_OPENSOURCE
+    ? [
+        {
+          title: 'Discord',
+          href: 'https://discord.gg/mail0',
+          description: 'Join our community and chat with the team.',
+          platform: 'discord' as const,
+        },
+      ]
+    : []),
 ];
 
 const aboutLinks = [
@@ -89,6 +94,7 @@ export function Navigation() {
   const { data: githubData } = useQuery({
     queryKey: ['githubStars'],
     queryFn: async () => {
+      if (HIDE_OPENSOURCE) return { stargazers_count: 0 };
       const response = await fetch('https://api.github.com/repos/Mail-0/Zero', {
         headers: {
           Accept: 'application/vnd.github.v3+json',
@@ -99,10 +105,11 @@ export function Navigation() {
       }
       return response.json() as Promise<GitHubApiResponse>;
     },
+    enabled: !HIDE_OPENSOURCE,
   });
 
   useEffect(() => {
-    if (githubData) {
+    if (githubData && !HIDE_OPENSOURCE) {
       setStars(githubData.stargazers_count || 0);
     }
   }, [githubData]);
@@ -114,7 +121,20 @@ export function Navigation() {
         <nav className="border-input/50 flex w-full max-w-4xl items-center justify-between gap-2 rounded-xl border-t bg-[#1E1E1E] p-3 px-6">
           <div className="flex items-center gap-6">
             <Link to="/" className="relative bottom-1 cursor-pointer">
-              <img src="white-icon.svg" alt="Zero Email" width={22} height={22} />
+              <img
+                src="/logo_light.png"
+                alt={`${BRAND_NAME} Email`}
+                width={22}
+                height={22}
+                className="dark:hidden"
+              />
+              <img
+                src="/logo_dark.png"
+                alt={`${BRAND_NAME} Email`}
+                width={22}
+                height={22}
+                className="hidden dark:block"
+              />
               <span className="text-muted-foreground absolute -right-[-0.5px] text-[10px]">
                 beta
               </span>
@@ -155,15 +175,17 @@ export function Navigation() {
                   </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem className="bg-transparent text-white">
-                  <a href="/pricing">
-                    <Button variant="ghost" className="h-9 bg-transparent">
-                      Pricing
-                    </Button>
-                  </a>
+                  {!APP_CONFIG.isFree && (
+                    <a href="/pricing">
+                      <Button variant="ghost" className="h-9 bg-transparent">
+                        Pricing
+                      </Button>
+                    </a>
+                  )}
                 </NavigationMenuItem>
                 <NavigationMenuItem className="bg-transparent text-white">
                   <a href="/privacy">
-                    <Button variant="ghost" className="h-9 bg-transparent ml-1">
+                    <Button variant="ghost" className="ml-1 h-9 bg-transparent">
                       Privacy
                     </Button>
                   </a>
@@ -172,24 +194,26 @@ export function Navigation() {
             </NavigationMenu>
           </div>
           <div className="flex gap-2">
-            <a
-              href="https://github.com/Mail-0/Zero"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={cn(
-                'group inline-flex h-8 items-center gap-2 rounded-lg bg-black px-2 text-sm text-white transition-colors hover:bg-black/90',
-              )}
-            >
-              <div className="flex items-center text-white">
-                <GitHub className="mr-1 size-4 fill-white" />
-                <span className="ml-1 lg:hidden">Star</span>
-                <span className="ml-1 hidden lg:inline">GitHub</span>
-              </div>
-              <div className="flex items-center gap-1 text-sm">
-                <Star className="relative top-px size-4 fill-gray-400 transition-all duration-300 group-hover:fill-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
-                <AnimatedNumber value={stars} className="font-medium text-white" />
-              </div>
-            </a>
+            {!HIDE_OPENSOURCE && (
+              <a
+                href="https://github.com/Mail-0/Zero"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'group inline-flex h-8 items-center gap-2 rounded-lg bg-black px-2 text-sm text-white transition-colors hover:bg-black/90',
+                )}
+              >
+                <div className="flex items-center text-white">
+                  <GitHub className="mr-1 size-4 fill-white" />
+                  <span className="ml-1 lg:hidden">Star</span>
+                  <span className="ml-1 hidden lg:inline">GitHub</span>
+                </div>
+                <div className="flex items-center gap-1 text-sm">
+                  <Star className="relative top-px size-4 fill-gray-400 transition-all duration-300 group-hover:fill-yellow-400 group-hover:drop-shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                  <AnimatedNumber value={stars} className="font-medium text-white" />
+                </div>
+              </a>
+            )}
             <Button
               className="h-8 bg-white text-black hover:bg-white hover:text-black"
               onClick={() => {
@@ -227,15 +251,15 @@ export function Navigation() {
               <SheetTitle>
                 <Link to="/" onClick={() => setOpen(false)}>
                   <img
-                    src="white-icon.svg"
-                    alt="Zero Email"
+                    src="/logo_dark.png"
+                    alt={`${BRAND_NAME} Email`}
                     className="hidden object-contain dark:block"
                     width={22}
                     height={22}
                   />
                   <img
-                    src="/black-icon.svg"
-                    alt="0.email Logo"
+                    src="/logo_light.png"
+                    alt={`${BRAND_NAME} Email`}
                     className="object-contain dark:hidden"
                     width={22}
                     height={22}
@@ -248,9 +272,11 @@ export function Navigation() {
                 <Link to="/" className="mt-2" onClick={() => setOpen(false)}>
                   Home
                 </Link>
-                <Link to="/pricing" className="mt-2" onClick={() => setOpen(false)}>
-                  Pricing
-                </Link>
+                {!APP_CONFIG.isFree && (
+                  <Link to="/pricing" className="mt-2" onClick={() => setOpen(false)}>
+                    Pricing
+                  </Link>
+                )}
                 <Link to="/privacy" className="mt-2" onClick={() => setOpen(false)}>
                   Privacy
                 </Link>

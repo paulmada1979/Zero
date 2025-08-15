@@ -28,6 +28,7 @@ import { EPrompts } from '../../../server/src/types';
 import { useMutation } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useForm } from 'react-hook-form';
+import { BRAND_NAME } from '@/lib/config';
 import { Paper } from '../icons/icons';
 import { Textarea } from './textarea';
 import { Link } from 'react-router';
@@ -135,7 +136,7 @@ export function PromptsDialog() {
         <DialogContent className="max-w-(--breakpoint-lg)" showOverlay={true}>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              ZeroAI System Prompts{' '}
+              {BRAND_NAME}AI System Prompts{' '}
               <Link
                 to={'https://github.com/Mail-0/Zero.git'}
                 target="_blank"
@@ -146,7 +147,7 @@ export function PromptsDialog() {
               </Link>
             </DialogTitle>
             <DialogDescription>
-              We believe in Open Source, so we're open sourcing our AI system prompts.
+              We believe in transparency, so we're sharing our AI system prompts.
             </DialogDescription>
           </DialogHeader>
           <Tabs className="mt-2">

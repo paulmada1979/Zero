@@ -11,6 +11,7 @@ import type { AppRouter } from '@zero/server/trpc';
 import { CACHE_BURST_KEY } from '@/lib/constants';
 import { signOut } from '@/lib/auth-client';
 import { get, set, del } from 'idb-keyval';
+import { BRAND_NAME } from '@/lib/config';
 import superjson from 'superjson';
 
 function createIDBPersister(idbValidKey: IDBValidKey = 'zero-query-cache') {
@@ -96,10 +97,10 @@ export const trpcClient = createTRPCClient<AppRouter>({
       fetch: (url, options) =>
         fetch(url, { ...options, credentials: 'include' }).then((res) => {
           const currentPath = new URL(window.location.href).pathname;
-          const redirectPath = res.headers.get('X-Zero-Redirect');
+          const redirectPath = res.headers.get(`X-${BRAND_NAME}-Redirect`);
           if (!!redirectPath && redirectPath !== currentPath) {
             window.location.href = redirectPath;
-            res.headers.delete('X-Zero-Redirect');
+            res.headers.delete(`X-${BRAND_NAME}-Redirect`);
           }
           return res;
         }),
@@ -112,7 +113,8 @@ export function QueryProvider({
   connectionId,
 }: PropsWithChildren<{ connectionId: string | null }>) {
   const persister = useMemo(
-    () => createIDBPersister(`zero-query-cache-${connectionId ?? 'default'}`),
+    () =>
+      createIDBPersister(`${BRAND_NAME.toLowerCase()}-query-cache-${connectionId ?? 'default'}`),
     [connectionId],
   );
   const queryClient = useMemo(() => getQueryClient(connectionId), [connectionId]);

@@ -5,6 +5,7 @@ import { ResizablePanel } from '@/components/ui/resizable';
 import { useSearchValue } from '@/hooks/use-search-value';
 import { useState, useEffect, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { APP_CONFIG, BRAND_NAME } from '@/lib/config';
 import { AIChat } from '@/components/create/ai-chat';
 import { useTRPC } from '@/providers/query-provider';
 import { Tools } from '../../../server/src/types';
@@ -117,7 +118,7 @@ function ChatHeader({
           </>
         )}
 
-        {!isPro && (
+        {!isPro && !APP_CONFIG.isFree && (
           <>
             <TooltipProvider delayDuration={0}>
               <Tooltip>
@@ -133,19 +134,23 @@ function ChatHeader({
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
-                    You've used {chatMessages.usage} out of {chatMessages.included_usage} chat
+                    You&apos;ve used {chatMessages.usage} out of {chatMessages.included_usage} chat
                     messages.
                   </p>
-                  <p className="mb-2">Upgrade for unlimited messages!</p>
-                  <Button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setPricingDialog('true');
-                    }}
-                    className="h-8 w-full"
-                  >
-                    Start 7 day free trial
-                  </Button>
+                  {!APP_CONFIG.isFree && (
+                    <>
+                      <p className="mb-2">Upgrade for unlimited messages!</p>
+                      <Button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPricingDialog('true');
+                        }}
+                        className="h-8 w-full"
+                      >
+                        Start 7 day free trial
+                      </Button>
+                    </>
+                  )}
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -346,7 +351,7 @@ function AISidebar({ className }: AISidebarProps) {
   const { data: activeConnection } = useActiveConnection();
 
   const agent = useAgent({
-    agent: 'ZeroAgent',
+    agent: `${BRAND_NAME}Agent`,
     name: activeConnection?.id ? String(activeConnection.id) : 'general',
     host: `${import.meta.env.VITE_PUBLIC_BACKEND_URL}`,
     onError: (e) => console.log(e),

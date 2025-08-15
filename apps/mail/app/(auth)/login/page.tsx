@@ -1,11 +1,16 @@
+import { authProxy } from '@/lib/auth-proxy';
 import { LoginClient } from './login-client';
 import { useLoaderData } from 'react-router';
+import { redirect } from 'react-router';
 
-export async function clientLoader() {
+export async function clientLoader({ request }: { request: Request }) {
+  const session = await authProxy.api.getSession({ headers: request.headers });
+  if (session?.user.id) throw redirect('/mail/inbox');
+
   const isProd = !import.meta.env.DEV;
 
   const response = await fetch(import.meta.env.VITE_PUBLIC_BACKEND_URL + '/api/public/providers');
-  const data = (await response.json()) as { allProviders: any[] };
+  const data = (await response.json()) as { allProviders: unknown[] };
 
   return {
     allProviders: data.allProviders,
